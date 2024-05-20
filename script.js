@@ -1,6 +1,7 @@
 let operator = ''
 let firstNumber = null;
 let secondNumber = null;
+let result = null;
 
 let display = document.querySelector('.display')
 
@@ -11,27 +12,37 @@ let isLastButtonOperator = false;
 
 function getDisplayValue() {
     displayValue = display.textContent;
+    return displayValue;
 }
 
 function getDisplayValueNumber() {
-    return parseFloat(displayValue);
+    return parseFloat(getDisplayValue());
 }
 
 function add (num1, num2) {
-    return num1 + num2;
+    if(num2 != null)
+        return num1 + num2;
+    else return num1;
 }
 
 function subtract(num1, num2) {
-    return num1 - num2;
+    if(num2 != null) 
+        return num1 - num2;
+    else return num1;
 }
 
 function multiply(num1, num2) {
-    return num1 * num2;
+    if(num2 != null)
+        return num1 * num2;
+    else return num1;    
 }
 
 function divide(num1, num2) {
-    if(num2 === 0) return "ERROR";
-    return num1 / num2;
+    if(num2 != null) {
+        return num1 / num2;
+        if(num2 === 0) return "ERROR";
+    }
+    else return num1;
 }
 
 function operate(operator, num1, num2) {
@@ -57,14 +68,19 @@ function addNumberToDisplay(number) {
         display.textContent = "";
     }
     display.textContent += `${number}`;
+
     isLastButtonOperator = false;
+
+    // storeValue(getDisplayValueNumber());
 }
 
 let numberButtons = document.querySelectorAll('.btn-number');
 numberButtons.forEach((button) => {
     button.addEventListener('click', () => {
         addNumberToDisplay(button.textContent);
-        console.log(button.textContent);
+        // result = operate(operator, firstNumber, secondNumber);
+        debug();
+        // console.log(button.textContent);
     })
 })
 
@@ -74,6 +90,7 @@ function clearDisplay() {
     firstNumber = null;
     secondNumber = null;
     operator = '';
+    result = null;
 }
 
 let clearButton = document.querySelector('.btn-clear');
@@ -86,18 +103,18 @@ operatorDiv.addEventListener('click', (e) => {
     switch(e.target.id) {
         case 'btn-add':
             console.log("+");
-            displayOperator("+");
+            executeOperator("+");
             break;
         case 'btn-subtract':
-            displayOperator("-");
+            executeOperator("-");
             console.log("-");
             break;
         case 'btn-divide':
-            displayOperator("/");
+            executeOperator("/");
             console.log("/");
             break;
         case 'btn-multiply':
-            displayOperator("X");
+            executeOperator("X");
             console.log("X");
             break;
         case 'btn-equals':
@@ -108,38 +125,82 @@ operatorDiv.addEventListener('click', (e) => {
     isLastButtonOperator = true;
 })
 
-function displayOperator(operatorSymbol) {
-    operator = operatorSymbol;
+function storeValue(value) {
+    // if(firstNumber == null) {
+    //     firstNumber = value;
+    // } else if (secondNumber != null){
+    //     firstNumber = operate(operator, firstNumber, secondNumber);
+    //     secondNumber = value;
+    // } else secondNumber = value;
+    result = (result === null ? value : operate(operator, result, value));
+}
+
+function debug() {
+    console.log("First number : " + firstNumber);
+    console.log("Second number : " + secondNumber);
+    console.log("Operator : " + operator);
+    console.log("Result : " + result);
+}
+
+// function executeOperator(operatorSymbol) {
+
+//     let displayValueNumber = getDisplayValueNumber();
+
+//     operator = operatorSymbol;
+
+//     if(!isLastButtonOperator) {
+//         storeValue(displayValueNumber);
+//     }
+
+//     console.log("First number : " + firstNumber);
+//     console.log("Second number : " + secondNumber);
+
+//     // if(!isLastButtonOperator) {
+//     //     console.log(displayValueNumber);
+    
+//     //     if(firstNumber == null) {
+//     //         firstNumber = displayValueNumber;
+//     //     } else {
+//     //         firstNumber = operate(opera    console.log("First number : " + firstNumber);
+    // console.log("Second number : " + secondNumber)
+    // console.log("Operator : " + operator)
+    // console.log("Result : " + result);operator)
+//     }
+    
+// }
+
+function executeOperator(operatorSymbol) {
 
     if(!isLastButtonOperator) {
-        let displayValueNumber = getDisplayValueNumber();
-        console.log(displayValueNumber);
-    
-        if(firstNumber == null) {
-            firstNumber = displayValueNumber;
-        } else {
-            firstNumber = operate(operator, firstNumber, displayValueNumber);
-            display.textContent = firstNumber;
-        }
+        storeValue(getDisplayValueNumber())
     }
-    secondNumber = "";
+
+    // result = operate(operator, firstNumber, secondNumber);
+
+    operator = operatorSymbol;
+
+    debug();
+
+    display.textContent = result;
+    
 }
+
+// function displayEquals() {
+
+//     let displayValueNumber = getDisplayValueNumber();
+
+//     storeValue(displayValueNumber);
+
+//     let result = (secondNumber === null ? firstNumber : operate(operator, firstNumber, secondNumber))
+//     // firstNumber = (displayValueNumber === NaN ? firstNumber : operate(operator, firstNumber, displayValueNumber))
+
+//     display.textContent = result;
+
+// }
 
 function displayEquals() {
 
-    let displayValueNumber = getDisplayValueNumber();
+    storeValue(getDisplayValueNumber());
 
-    if(firstNumber == null) {
-        firstNumber = displayValueNumber;
-    }
-    else {
-        secondNumber = displayValueNumber;
-    }
-
-    firstNumber = (secondNumber === null ? firstNumber : operate(operator, firstNumber, secondNumber))
-    // firstNumber = (displayValueNumber === NaN ? firstNumber : operate(operator, firstNumber, displayValueNumber))
-
-    display.textContent = firstNumber;
-
-    secondNumber = "";
+    display.textContent = result;
 }
